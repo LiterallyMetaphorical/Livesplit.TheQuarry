@@ -1,8 +1,6 @@
 state("TheQuarry-Win64-Shipping")
 {
-    int loading    : 0x07262F00, 0xE18, 0x8D8;
-    int menuState  : 0x6E1B350;
-    int Chapter    : 0x7165650; //problematic for splitting cause it changes a lot lol but works for starting
+    int loading    : 0x06E267F0, 0x50, 0x20, 0x2D8, 0xC4;
 }
 
 startup
@@ -23,11 +21,6 @@ startup
             timer.CurrentTimingMethod = TimingMethod.GameTime;
         }
     }
-}
-
-start
-{
-    return (old.Chapter == 0 && current.Chapter == 3);
 }
 
 init
