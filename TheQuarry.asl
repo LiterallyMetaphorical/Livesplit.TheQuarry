@@ -1,6 +1,6 @@
 state("TheQuarry-Win64-Shipping")
 {
-    int loading    : 0x070276A8, 0x0, 0xB98, 0xFB8;
+    int loading    : 0x070276A8, 0x0, 0xB98, 0xFB8; // loading is basically a bool
 }
 
 startup
