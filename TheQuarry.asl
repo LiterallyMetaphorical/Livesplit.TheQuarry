@@ -1,6 +1,6 @@
 state("TheQuarry-Win64-Shipping")
 {
-    int loading    : 0x070276A8, 0x0, 0xB98, 0xFB8; // loading is basically a bool
+    int loading    : 0x06EC31B0, 0xFD8, 0x820, 0x1C8; // 0 in game, goes very quickly between some 10 digit values and lands on 1065353216 during load
 }
 
 startup
