@@ -1,6 +1,5 @@
 state("TheQuarry-Win64-Shipping")
 {
-    int loading              : 0x071DD9E8, 0x70, 0x2E0, 0x3EC; //5 on load, 4 in game and MM
 }
 
 init
