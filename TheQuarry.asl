@@ -1,11 +1,26 @@
 state("TheQuarry-Win64-Shipping")
 {
     int loading              : 0x071DD9E8, 0x70, 0x2E0, 0x3EC; //5 on load, 4 in game and MM
-    string150 activeSubtitle : 0x07309D38, 0x550, 0x608, 0x0; //current active subtitle (and some other on-screen strings)
+}
+
+init
+{
+    var scn = new SignatureScanner(game, game.MainModule.BaseAddress, game.MainModule.ModuleMemorySize);
+    var module = modules.First();
+    var scanner = new SignatureScanner(game, module.BaseAddress, module.ModuleMemorySize);
+
+    var LoadingBaseAddress = scn.Scan(new SigScanTarget(3, "488B??????????488D????4885??490F????EB??488B??????????488B??FF????84??0F85????????488B") { OnFound = (p, s, ptr) => ptr + 0x4 + game.ReadValue<int>(ptr) });
+    vars.LoadingPtr = new DeepPointer (LoadingBaseAddress, 0x70, 0x2E0, 0x3EC);
+
+    vars.Watchers = new MemoryWatcherList
+    {
+        //Loading SigScan
+        new MemoryWatcher<int>(vars.LoadingPtr) { Name = "LoadingPtr"}
+    };
 }
 
 startup
-{
+  {
 		if (timer.CurrentTimingMethod == TimingMethod.RealTime)
 // Asks user to change to game time if LiveSplit is currently set to Real Time.
     {        
@@ -24,17 +39,31 @@ startup
     }
 }
 
+onStart
+{
+    // This makes sure the timer always starts at 0.00
+    timer.IsGameTimePaused = true;
+}
+
 update
-{ 
-    //print(current.loading.ToString());
-    //print(current.loadedMap.ToString());
-    //print(current.activeSubtitle.ToString());
-    //print(modules.First().ModuleMemorySize.ToString());
-}   
+{
+vars.Watchers.UpdateAll(game);
+
+vars.SigLoading = vars.Watchers["LoadingPtr"];
+//DEBUG CODE
+//print(modules.First().ModuleMemorySize.ToString());
+print(vars.SigLoading.Current.ToString());
+//print(vars.LoadingPtr.ToString("X"));
+}
+
+start
+{
+    return vars.SigLoading.Current == 5 && vars.SigLoading.Old == 4;
+}
 
 isLoading
 {
-   return current.loading == 5;
+    return vars.SigLoading.Current == 5;
 }
 
 exit
